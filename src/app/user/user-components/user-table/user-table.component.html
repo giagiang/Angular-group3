@@ -1,0 +1,53 @@
+<div class="card">
+  <div class="card-body">
+    <h4 class="card-title">List User in System</h4>
+    <h5 class="card-subtitle text-muted">Overview of the system</h5>
+    <button class="btn btn-primary">New User</button>
+    <div class="table-responsive">
+      <table class="table align-middle text-nowrap">
+        <thead>
+          <tr>
+            <th>STT</th>
+            <th class="text-dark font-medium fs-4">Team Lead</th>
+            <th class="text-dark font-medium fs-4">UserName</th>
+            <th class="text-dark font-medium fs-4">PhoneNumber</th>
+            <th class="text-dark font-medium fs-4">Status</th>
+            <th class="text-dark font-medium fs-4">Roles</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody *ngFor="let u of listUser|paginate : {
+            itemsPerPage: tableSize,
+            currentPage: page,
+            totalItems: count
+          };,index as i">
+          <tr>
+            <th scope="row">{{i+1}}</th>
+            <td>
+              <div class="d-flex align-items-center">
+                <img src={{BaseImage+u.image}} alt="user" width="45" class="rounded-circle">
+                <div class="ms-3">
+                  <h5 class="mb-0 font-medium">{{u.fullName}}</h5>
+                  <span class="text-muted">{{u.email}}</span>
+                </div>
+              </div>
+            </td>
+            <td>{{u.userName}}</td>
+            <td>{{u.phoneNumber}}</td>
+            <td>
+              <span class="p-2 bg-{{u.status===false?'danger':'primary'}} rounded-circle d-inline-block ms-3"></span>
+            </td>
+            <td *ngFor="let i of u.roles">{{i.name?i.name:'no role'}}</td>
+            <td>
+              <a class="btn-sm btn-danger" (click)="openModal(u.id)">Delete</a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="d-flex justify-content-center">
+        <pagination-controls previousLabel="Prev" nextLabel="Next"
+          (pageChange)="onTableDataChange($event)">
+        </pagination-controls>
+      </div>
+    </div>
+  </div>
