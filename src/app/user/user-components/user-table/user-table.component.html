@@ -2,7 +2,7 @@
   <div class="card-body">
     <h4 class="card-title">List User in System</h4>
     <h5 class="card-subtitle text-muted">Overview of the system</h5>
-    <button class="btn btn-primary">New User</button>
+    <button class="btn btn-primary" (click)="openNew(contentNew)">New User</button>
     <div class="table-responsive">
       <table class="table align-middle text-nowrap">
         <thead>
@@ -39,15 +39,95 @@
             </td>
             <td *ngFor="let i of u.roles">{{i.name?i.name:'no role'}}</td>
             <td>
-              <a class="btn-sm btn-danger" (click)="openModal(u.id)">Delete</a>
+              <a class="btn-sm btn-danger" (click)="openEdit(contentEdit,u)">Update</a>
+              <a class="btn-sm btn-danger" (click)="open(content,u.id)">Delete</a>
             </td>
           </tr>
         </tbody>
       </table>
       <div class="d-flex justify-content-center">
-        <pagination-controls previousLabel="Prev" nextLabel="Next"
-          (pageChange)="onTableDataChange($event)">
+        <pagination-controls previousLabel="Prev" nextLabel="Next" (pageChange)="onTableDataChange($event)">
         </pagination-controls>
       </div>
     </div>
   </div>
+  <ng-template #content let-modal>
+    <div class="modal-header modal-title bg-primary">
+      <h4 class="modal-title" id="modal-basic-title">Remove User</h4>
+      <button type="button" class="close btn-outline-success btn" aria-label="Close"
+        (click)="modal.dismiss('Cross click')">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <h5>Bạn có chắc là xóa người dùng này không ?</h5>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-outline-dark" (click)="modal.close('save')">Save</button>
+    </div>
+  </ng-template>
+  <ng-template #contentEdit let-modal>
+    <div class="modal-header modal-title bg-primary">
+      <h4 class="modal-title" id="modal-basic-title">Update User</h4>
+      <button type="button" class="close btn-outline-success btn" aria-label="Close"
+        (click)="modal.dismiss('Cross click')">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <form>
+
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-outline-dark" (click)="modal.close('save')">Save</button>
+    </div>
+  </ng-template>
+
+  <ng-template #contentNew let-modal>
+    <div class="modal-header modal-title bg-primary">
+      <h4 class="modal-title" id="modal-basic-title">New User</h4>
+      <button type="button" class="close btn-outline-success btn" aria-label="Close"
+        (click)="modal.dismiss('Cross click')">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <form [formGroup]="newUser">
+        <div class="form-group">
+          <label for="exampleInputEmail1">FullName</label>
+          <input class="form-control" placeholder="FullName" formControlName="FullName">
+          <small id="emailHelp" class="form-text text-muted bg-danger" *ngIf="newUser.controls.FullName.invalid">Must Input Your FullName</small>
+        </div>
+        <div class="form-group">
+          <label for="exampleInputEmail1">UserName</label>
+          <input class="form-control" placeholder="UserName" formControlName="UserName">
+          <small id="emailHelp" class="form-text text-muted bg-danger" *ngIf="newUser.controls.UserName.invalid">We'll never share your email with anyone else.</small>
+        </div>
+        <div class="form-group">
+          <label for="exampleInputEmail1">Password</label>
+          <input class="form-control" type="password" placeholder="Password" formControlName="Password">
+          <small id="emailHelp" class="form-text text-muted bg-danger" *ngIf="newUser.controls.Password.invalid">Your Password</small>
+        </div>
+        <div class="form-group">
+          <label for="exampleInputEmail1">Email</label>
+          <input class="form-control" placeholder="Email" formControlName="Email">
+          <small id="emailHelp" class="form-text text-muted bg-danger" *ngIf="newUser.controls.Email.invalid">Your Email</small>
+        </div>
+        <div class="form-group">
+          <label for="exampleInputEmail1">Image</label>
+          <input class="form-control" type="file" (change)="onFileChange($event)">
+          <small id="emailHelp" class="form-text text-muted">Your Image</small>
+        </div>
+        <div class="form-group">
+          <label for="exampleInputEmail1">Roles</label>
+          <select class="form-control" formControlName="Roles" *ngFor="let r of listRoles">
+            <option [value]="r.name">{{r.name}}</option>
+          </select>
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button [disabled]="newUser.invalid" type="button" class="btn btn-primary" (click)="modal.close('save')">Save</button>
+    </div>
+  </ng-template>
