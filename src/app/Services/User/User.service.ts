@@ -1,4 +1,4 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { Observable } from 'rxjs';
@@ -11,11 +11,7 @@ export class UserService {
   constructor(private http:HttpClient) { }
   
   list(SkipCount:any,MaxResultCount:any,Filter?:string): Observable<any> {
-    let filter!:string;
-    if(Filter!==undefined) {filter="&Filter="+Filter}
-    else{filter=''}
-    console.log(Filter)
-    return this.http.get(this.baseUrl+"?SkipCount="+SkipCount+"&MaxResultCount="+MaxResultCount+filter); ;
+    return this.http.get(this.baseUrl+"?SkipCount="+SkipCount+"&MaxResultCount="+MaxResultCount); ;
   }
   update(data:any):Observable<any>{
     return this.http.post(this.baseUrl,data);
@@ -25,11 +21,5 @@ export class UserService {
   }
   updateStatus(data:any):Observable<any>{
     return this.http.put(`${this.baseUrl}status`,data);
-  }
-  getListRoles():Observable<any>{
-    return this.http.get(`${this.baseUrl}GetListRole`);
-  }
-  createUser(data:any):Observable<any>{
-    return this.http.post(this.baseUrl,data)
   }
 }

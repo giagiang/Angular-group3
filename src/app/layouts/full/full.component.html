@@ -139,22 +139,3 @@
   <!-- End Page wrapper  -->
   <!-- ============================================================== -->
 </div>
-
-
-<ng-template #notify let-modal>
-  <div class="modal-header modal-title bg-primary">
-    <h4 class="modal-title" id="modal-basic-title">Notify From Admin</h4>
-    <button type="button" class="close btn-outline-success btn" aria-label="Close"
-      (click)="modal.dismiss('Cross click')">
-      <span aria-hidden="true">&times;</span>
-    </button>
-  </div>
-  <div class="modal-body">
-    <form>
-
-    </form>
-  </div>
-  <div class="modal-footer">
-    <button type="button" class="btn btn-outline-dark" (click)="modal.close('save')">Save</button>
-  </div>
-</ng-template>

@@ -20,10 +20,6 @@ export const Approutes: Routes = [
         loadChildren: () => import('./user/user.module').then(m => m.UserModule)
       },
       {
-        path: 'notification',
-        loadChildren: () => import('./Notification/Notification.module').then(m => m.NotificationModule)
-      },
-      {
         path: 'about',
         loadChildren: () => import('./about/about.module').then(m => m.AboutModule)
       },

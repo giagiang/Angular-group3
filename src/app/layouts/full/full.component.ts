@@ -3,50 +3,18 @@ import { Router } from "@angular/router";
 import { NotifyService } from "../../Services/Notify/Notify.service";
 import { HubService } from "../../Services/Hub.service";
 import { UserService } from "../../Services/User/User.service";
-import { NgbActiveModal, NgbModal } from "@ng-bootstrap/ng-bootstrap";
 
 //declare var $: any;
-
-
-@Component({
-  // tslint:disable-next-line:component-selector
-  selector: 'ngbd-modal-content',
-  template: `
-    <div class="modal-header modal-header bg-danger">
-      <h4 class="modal-title">{{title}}</h4>
-      <button type="button" class="close btn-danger" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
-        <span aria-hidden="true">&times;</span>
-      </button>
-    </div>
-    <div class="modal-body" [innerHtml]="message">
-      {{message}}
-    </div>
-    <div class="modal-footer">
-      <button type="button" class="btn btn-outline-dark" (click)="activeModal.close('Close click')">Close</button>
-    </div>
-  `
-})
-// tslint:disable-next-line:component-class-suffix
-export class NgbdModalContent {
-  @Input() title = "";
-  @Input() message = "";
-
-  constructor(public activeModal: NgbActiveModal) { }
-}
-
-
-
-
 
 @Component({
   selector: "app-full-layout",
   templateUrl: "./full.component.html",
   styleUrls: ["./full.component.scss"],
 })
-export class FullComponent implements OnInit, OnDestroy {
+export class FullComponent implements OnInit,OnDestroy {
 
   constructor(public router: Router, private hubService: HubService,
-    private userService: UserService, private notify: NotifyService, private modalService: NgbModal) { }
+    private userService: UserService,private notify:NotifyService) { }
   public isCollapsed = false;
   public innerWidth: number = 0;
   public defaultSidebar: string = "";
@@ -57,53 +25,26 @@ export class FullComponent implements OnInit, OnDestroy {
     this.expandLogo = !this.expandLogo;
   }
   ngOnDestroy(): void {
-    this.hubService.stopHubConnection();
+     this.hubService.stopHubConnection();
   }
 
   ngOnInit() {
     console.log(this.hubService.status)
-    const user = JSON.parse(sessionStorage.getItem('user') || '{}');
-    if (this.hubService.status === false) {
+    const user=JSON.parse(sessionStorage.getItem('user')|| '{}');
+    if(this.hubService.status===false){
       this.hubService.initiateSignalrConnection();
     }
-    this.hubService.hubConnection.on('online', (u) => {
-      if (user.userName !== u) {
+    this.hubService.hubConnection.on('online',(u)=>{
+      if(user.userName!==u){
         this.notify.showInfo(`User ${u} just Online`);
       }
     })
-    this.hubService.hubConnection.on('offline', (u) => {
-      if (user.userName !== u) {
+    this.hubService.hubConnection.on('offline',(u)=>{
+      if(user.userName!==u){
         this.notify.showInfo(`User ${u} just offline`);
       }
     })
-
-    this.hubService.hubConnection.on('notifyAll', (response, u, who) => {
-      if (user.userName !== u) {
-        if (who.length!==0) {
-          if (who.indexOf(user.userName) !== -1) {
-            const notify = this.modalService.open(NgbdModalContent);
-            notify.componentInstance.title = response.title;
-            notify.componentInstance.message = response.message;
-            setTimeout(() => {
-              notify.close();
-            }, 10000)
-          }
-        }
-        else {
-          console.log("vao else")
-          const notify = this.modalService.open(NgbdModalContent);
-          notify.componentInstance.title = response.title;
-          notify.componentInstance.message = response.message;
-          setTimeout(() => {
-            notify.close();
-          }, 10000)
-        }
-      }
-
-    })
-
-
-    if (this.router.url === "/") {
+    if(this.router.url === "/") {
       this.router.navigate(["/dashboard"]);
     }
     this.defaultSidebar = this.sidebartype;
