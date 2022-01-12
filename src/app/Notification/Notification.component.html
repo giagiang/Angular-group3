@@ -1,0 +1,140 @@
+<div class="card">
+  <div class="card-body">
+    <h4 class="card-title">List Notification in System</h4>
+    <h5 class="card-subtitle text-muted">Overview of the system</h5>
+    <button class="btn btn-primary" (click)="open(contentNew)">New Notify</button>
+    <div class="table-responsive">
+      <table class="table align-middle text-nowrap">
+        <thead>
+          <tr>
+            <th>STT</th>
+            <th class="text-dark font-medium fs-4">Title</th>
+            <th class="text-dark font-medium fs-4">Message</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody *ngFor="let u of listNotify|paginate : {
+            itemsPerPage: tableSize,
+            currentPage: page,
+            totalItems: count
+          };,index as i">
+          <tr>
+            <th scope="row">{{i+1}}</th>
+            <td>{{u.title}}</td>
+            <td ng-bind-html="u.message"><code [innerHtml]="u.message"></code></td>
+            <td>
+              <a class="btn-sm btn-danger" (click)="openDelete(content,u.id)">Delete</a>
+              <a class="btn-sm btn-danger" (click)="openNotify(contentNotify,u.id)">Send Notify</a>
+              <a class="btn-sm btn-danger" (click)="openNotifyToUsers(contentNotifyToUsers,u.id)">Send Notify To
+                Users</a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="d-flex justify-content-center">
+        <pagination-controls previousLabel="Prev" nextLabel="Next" (pageChange)="onTableDataChange($event)">
+        </pagination-controls>
+      </div>
+    </div>
+  </div>
+  <!-- Modal Delete -->
+  <ng-template #content let-modal>
+    <div class="modal-header modal-title bg-primary">
+      <h4 class="modal-title" id="modal-basic-title">Remove Notify</h4>
+      <button type="button" class="close btn-outline-success btn" aria-label="Close"
+        (click)="modal.dismiss('Cross click')">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <h5>Bạn có chắc là xóa người dùng này không ?</h5>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-outline-dark" (click)="modal.close('save')">Save</button>
+    </div>
+  </ng-template>
+
+  <!-- NotifyToUsers -->
+  <ng-template #contentNotifyToUsers let-modal>
+    <div class="modal-header modal-title bg-primary">
+      <h4 class="modal-title" id="modal-basic-title">Send Notify</h4>
+      <button type="button" class="close btn-outline-success btn" aria-label="Close"
+        (click)="modal.dismiss('Cross click')">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <label for="exampleDataList" class="form-label">List User To Send</label>
+      <input class="form-control" list="datalistOptions" #exampleDataList placeholder="Type and enter to search..."
+        [(ngModel)]="inputSearch" (ngModelChange)="changed($event)" (keyup.enter)="setListData(exampleDataList.value)">
+      <datalist id="datalistOptions">
+        <div *ngFor="let i of listUserFromApi">
+          <option value="{{i.userName}}">Full Name: {{i.fullName}}</option>
+        </div>
+      </datalist>
+      <div class='color-red'>{{statusInput}}</div>
+      <div class="listUser list-group mt-2">
+        <div *ngFor="let i of listUser">
+          <div class="list-group-item list-group-item-action">{{i}}</div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-outline-dark" (click)="modal.close('save')">Send</button>
+    </div>
+  </ng-template>
+
+
+  <!-- Notify to All Users -->
+
+  <ng-template #contentNotify let-modal>
+    <div class="modal-header modal-title bg-primary">
+      <h4 class="modal-title" id="modal-basic-title">Send Notify</h4>
+      <button type="button" class="close btn-outline-success btn" aria-label="Close"
+        (click)="modal.dismiss('Cross click')">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <h5>Bạn có chắc là muốn gửi thông báo này ?</h5>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-outline-dark" (click)="modal.close('save')">Save</button>
+    </div>
+  </ng-template>
+
+
+  <!-- New Notify -->
+  <ng-template #contentNew let-modal>
+    <div class="modal-header modal-title bg-primary">
+      <h4 class="modal-title" id="modal-basic-title">New Notification</h4>
+      <button type="button" class="close btn-outline-success btn" aria-label="Close"
+        (click)="modal.dismiss('Cross click')">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <form [formGroup]="newNotify">
+        <div class="form-group">
+          <label for="exampleInputEmail1">Title</label>
+          <input class="form-control" placeholder="Title" formControlName="title">
+          <small style="color: red !important;" id="emailHelp" class="form-text text-muted"
+            *ngIf="newNotify.controls.title.invalid">Must Input Your Title</small>
+        </div>
+        <div class="form-group">
+          <label for="exampleInputEmail1">Message</label>
+          <ckeditor [config]="{toolbar: { items: [ 'heading' , '|' , 'fontfamily'
+            , 'fontsize' , '|' , 'alignment' , '|' , 'fontColor' , 'fontBackgroundColor' , '|' , 'bold' , 'italic'
+            , 'strikethrough' , 'underline' , 'subscript' , 'superscript' , '|' , 'bulletedList' , 'numberedList'
+            , 'todoList' , '|' , 'code' , 'codeBlock' , '|' , 'insertTable' , '|' , 'code' , 'codeBlock' , '|'
+            , 'blockQuote' , '|' ] }}" formControlName='message' [editor]="Editor" data=""></ckeditor>
+          <small style="color: red !important;" id="emailHelp" class="form-text text-muted"
+            *ngIf="newNotify.controls.message.invalid">Must Input Your Message</small>
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button [disabled]="newNotify.invalid" type="button" class="btn btn-primary"
+        (click)="modal.close('save')">Save</button>
+    </div>
+  </ng-template>
