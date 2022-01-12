@@ -6,8 +6,8 @@ import { Observable } from 'rxjs';
 @Injectable({
   providedIn: 'root'
 })
-export class UserService {
-  baseUrl = environment.BaseUrl+ 'accounts/';
+export class ClassService {
+  baseUrl = environment.BaseUrl+ 'classes/';
   constructor(private http:HttpClient) { }
   
   list(SkipCount:any,MaxResultCount:any,Filter?:string): Observable<any> {
@@ -26,10 +26,8 @@ export class UserService {
   updateStatus(data:any):Observable<any>{
     return this.http.put(`${this.baseUrl}status`,data);
   }
-  getListRoles():Observable<any>{
-    return this.http.get(`${this.baseUrl}GetListRole`);
-  }
-  createUser(data:any):Observable<any>{
+ 
+  create(data:any):Observable<any>{
     return this.http.post(this.baseUrl,data)
   }
 }
