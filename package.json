@@ -9,7 +9,7 @@
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "run-project":"ng serve"
+    "start-local":"ng serve"
   },
   "private": true,
   "dependencies": {
