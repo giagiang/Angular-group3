@@ -7,7 +7,7 @@ import {
 import { APP_INITIALIZER, NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule, HttpClient, HTTP_INTERCEPTORS } from '@angular/common/http';
-import { Routes, RouterModule } from '@angular/router';
+import { Routes, RouterModule,PreloadAllModules } from '@angular/router';
 
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
@@ -52,7 +52,7 @@ const router=Router;
     ReactiveFormsModule,
     HttpClientModule,
     NgbModule,
-    RouterModule.forRoot(Approutes, { useHash: false, relativeLinkResolution: 'legacy' }),
+    RouterModule.forRoot(Approutes, { useHash: false,  preloadingStrategy: PreloadAllModules }),
     PerfectScrollbarModule,
     ToastrModule.forRoot(),
   ],
