@@ -28,6 +28,7 @@ import { CustomHttpInterceptorService } from './CustomHttpInterceptorService';
 import { ToastrModule } from 'ngx-toastr';
 import { HubService } from './Services/Hub.service';
 import { Router } from '@angular/router';
+import { LoaderInterceptor } from './LoaderInterceptor.service';
 
 const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
   suppressScrollX: true,
@@ -66,6 +67,7 @@ const router=Router;
       useValue: DEFAULT_PERFECT_SCROLLBAR_CONFIG
     },
     {provide: HTTP_INTERCEPTORS, useClass: CustomHttpInterceptorService, multi: true,},
+    { provide: HTTP_INTERCEPTORS, useClass: LoaderInterceptor, multi: true },
     HubService,
     {
       provide:APP_INITIALIZER,
