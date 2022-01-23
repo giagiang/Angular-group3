@@ -33,16 +33,13 @@ export const Approutes: Routes = [
   {
     path: 'NotFound',
     component: NotFoundComponent,
-    pathMatch: 'full',
-    canActivate: [ExpenseGuard]
   },
   {
     path: 'login',
     loadChildren: () => import('./Auth/Auth.module').then(m => m.AuthModule),
-    pathMatch: 'full'
   },
-  // {
-  //   path: '**',
-  //   redirectTo: 'NotFound',
-  // },
+  {
+    path: '**',
+    redirectTo: 'NotFound',
+  },
 ];
