@@ -7,7 +7,7 @@ import {
 import { APP_INITIALIZER, NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule, HttpClient, HTTP_INTERCEPTORS } from '@angular/common/http';
-import { Routes, RouterModule } from '@angular/router';
+import { Routes, RouterModule, PreloadAllModules } from '@angular/router';
 
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
@@ -27,7 +27,6 @@ import { PerfectScrollbarConfigInterface } from 'ngx-perfect-scrollbar';
 import { CustomHttpInterceptorService } from './CustomHttpInterceptorService';
 import { ToastrModule } from 'ngx-toastr';
 import { HubService } from './Services/Hub.service';
-import { Router } from '@angular/router';
 
 const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
   suppressScrollX: true,
@@ -35,7 +34,6 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
   wheelPropagation: true,
   minScrollbarLength: 20
 };
-const router=Router;
 @NgModule({
   declarations: [	
     AppComponent,
@@ -52,7 +50,7 @@ const router=Router;
     ReactiveFormsModule,
     HttpClientModule,
     NgbModule,
-    RouterModule.forRoot(Approutes, { useHash: false, relativeLinkResolution: 'legacy' }),
+    RouterModule.forRoot(Approutes, { useHash: false, preloadingStrategy: PreloadAllModules, relativeLinkResolution: 'legacy' }),
     PerfectScrollbarModule,
     ToastrModule.forRoot(),
   ],
@@ -65,17 +63,17 @@ const router=Router;
       provide: PERFECT_SCROLLBAR_CONFIG,
       useValue: DEFAULT_PERFECT_SCROLLBAR_CONFIG
     },
-    {provide: HTTP_INTERCEPTORS, useClass: CustomHttpInterceptorService, multi: true,},
+    { provide: HTTP_INTERCEPTORS, useClass: CustomHttpInterceptorService, multi: true, },
     HubService,
     {
-      provide:APP_INITIALIZER,
-      useFactory:(hubService:HubService)=>()=> {
-        if(sessionStorage.getItem('token') !== undefined&&sessionStorage.getItem('token')!==null){
+      provide: APP_INITIALIZER,
+      useFactory: (hubService: HubService) => () => {
+        if (sessionStorage.getItem('token') !== undefined && sessionStorage.getItem('token') !== null) {
           hubService.initiateSignalrConnection()
         }
       },
-      deps:[HubService],
-      multi:true,
+      deps: [HubService],
+      multi: true,
     }
   ],
   bootstrap: [AppComponent]

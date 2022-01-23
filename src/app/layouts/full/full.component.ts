@@ -2,7 +2,6 @@ import { Component, OnInit, HostListener, Input, OnDestroy } from "@angular/core
 import { Router } from "@angular/router";
 import { NotifyService } from "../../Services/Notify/Notify.service";
 import { HubService } from "../../Services/Hub.service";
-import { UserService } from "../../Services/User/User.service";
 import { NgbActiveModal, NgbModal } from "@ng-bootstrap/ng-bootstrap";
 
 //declare var $: any;
@@ -46,7 +45,7 @@ export class NgbdModalContent {
 export class FullComponent implements OnInit, OnDestroy {
 
   constructor(public router: Router, private hubService: HubService,
-    private userService: UserService, private notify: NotifyService, private modalService: NgbModal) { }
+    private notify: NotifyService, private modalService: NgbModal) { }
   public isCollapsed = false;
   public innerWidth: number = 0;
   public defaultSidebar: string = "";
@@ -61,7 +60,6 @@ export class FullComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    console.log(this.hubService.status)
     const user = JSON.parse(sessionStorage.getItem('user') || '{}');
     if (this.hubService.status === false) {
       this.hubService.initiateSignalrConnection();

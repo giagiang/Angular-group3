@@ -1,0 +1,8 @@
+.loader-text{
+  z-index: 9999999999;
+  font-size: 20px;
+  color: rgb(128, 96, 8);
+  position: absolute;
+  margin-left: 47%;
+  margin-top: 10%;
+}

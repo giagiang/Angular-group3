@@ -3,7 +3,6 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { environment } from '../../../environments/environment';
 import { PerfectScrollbarConfigInterface } from 'ngx-perfect-scrollbar';
 import { Router } from '@angular/router';
-import { HubService } from '../../Services/Hub.service';
 
 declare var $: any;
 
@@ -20,7 +19,7 @@ export class NavigationComponent implements OnInit,AfterViewInit {
   public user:any=sessionStorage.getItem('user');
   public fullName:string='';
   public image:string='';
-  constructor(private modalService: NgbModal,private router:Router,private hubService:HubService) {
+  constructor() {
   }
 
   // This is for Notifications
@@ -124,11 +123,5 @@ export class NavigationComponent implements OnInit,AfterViewInit {
     this.fullName=user.fullName;
     this.image=environment.BaseImage+user.image;
   }
-  logout(): void{
-    sessionStorage.removeItem('user');
-    sessionStorage.removeItem('token');
-    this.router.navigate(['/login']);
-    this.hubService.status=false;
-    console.log(this.hubService.status)
-  }
+  
 }

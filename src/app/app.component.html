@@ -1,3 +1,6 @@
+<ng-container *ngIf="loaderService.isLoading$ | async">
+  <div class="loader-text">Loading<span>...</span></div>        
+</ng-container>
 <router-outlet>
     <app-spinner></app-spinner>
 </router-outlet>

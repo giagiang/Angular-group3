@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { AuthService } from '../Services/Auth/AuthService.service';
 import { NotifyService } from '../Services/Notify/Notify.service';
 
@@ -12,29 +12,41 @@ import { NotifyService } from '../Services/Notify/Notify.service';
 })
 export class AuthComponent implements OnInit {
   login: any = FormGroup;
-  constructor(private router: Router, private userService: AuthService,
-     private formBuider: FormBuilder, private notify: NotifyService) { }
+  loading: boolean = false;
+  returnUrl: string = '';
+  constructor(private router: Router,private route:ActivatedRoute, private authService: AuthService,
+    private formBuider: FormBuilder, private notify: NotifyService) { }
 
   ngOnInit() {
+    //Reset login status
+    this.authService.logout();
+    //get return url from route parameters or default to '/'
+    this.returnUrl = this.route.snapshot.queryParams.returnUrl || '/';
+
+    // initial form
     this.login = this.formBuider.group({
       username: ['', Validators.required],
       password: ['', Validators.required]
-    })
+    });
+
   }
   onSubmit(data: any) {
-    this.userService.login(data).subscribe((auth:any) => {
+    this.loading = true;
+    this.authService.login(data).subscribe((auth: any) => {
       if (auth.isSuccessed) {
-        sessionStorage.setItem('user',JSON.stringify(auth.resultObj));
+        sessionStorage.setItem('user', JSON.stringify(auth.resultObj));
         sessionStorage.setItem('token', auth.resultObj.accessToken);
         if (auth.resultObj.roles.length > 0) {
           this.notify.showSuccess('Đăng nhập thành công !!', 'Success');
-          this.router.navigate(['']);
+          this.router.navigateByUrl(this.returnUrl);
         }
       } else {
         this.notify.showError(auth.message, 'Fail');
       }
-    },error=>{
+      this.loading = false;
+    }, error => {
       this.notify.showError(error.message, 'Error Server');
+      this.loading = false;
     });
   }
 
