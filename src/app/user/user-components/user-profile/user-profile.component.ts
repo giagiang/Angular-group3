@@ -12,6 +12,8 @@ export class UserProfileComponent implements OnInit {
   email:any;
   image:any;
   fullName:any;
+  userName:any;
+  phoneNumber:any;
   constructor() { }
 
   ngOnInit() {
@@ -19,6 +21,8 @@ export class UserProfileComponent implements OnInit {
     this.email=u.email;
     this.image=environment.BaseImage+u.image;
     this.fullName=u.fullName;
+    this.userName=u.userName;
+    this.phoneNumber=u.phoneNumber
   }
 
 }
