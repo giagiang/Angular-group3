@@ -17,7 +17,7 @@ export const Approutes: Routes = [
       },
       {
         path: 'user',
-        loadChildren: () => import('./user/user.module').then(m => m.UserModule)
+        loadChildren: () => import('./user/user.module').then(m => m.UserModule),
       },
       {
         path: 'notification',
@@ -26,16 +26,23 @@ export const Approutes: Routes = [
       {
         path: 'class',
         loadChildren: () => import('./class/class.module').then(m => m.ClassModule)
-      },
+      }
     ],
+    canActivate: [ExpenseGuard],
+  },
+  {
+    path: 'NotFound',
+    component: NotFoundComponent,
+    pathMatch: 'full',
     canActivate: [ExpenseGuard]
   },
   {
-    path: '**',
-    component:NotFoundComponent
-  },
-  {
     path: 'login',
-    loadChildren: () => import('./Auth/Auth.module').then(m => m.AuthModule)
-  }
+    loadChildren: () => import('./Auth/Auth.module').then(m => m.AuthModule),
+    pathMatch: 'full'
+  },
+  // {
+  //   path: '**',
+  //   redirectTo: 'NotFound',
+  // },
 ];
