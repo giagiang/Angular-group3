@@ -14,14 +14,17 @@ const userRoute: Routes = [
   {
     path: '',
     component: UserComponent,
+    pathMatch: 'full'
   },
   {
     path: 'profile',
-    component: UserProfileComponent
+    component: UserProfileComponent,
+    pathMatch: 'full'
   },
   {
     path: 'inbox',
-    component: UserInboxComponent
+    component: UserInboxComponent,
+    pathMatch: 'full'
   }
 ];
 @NgModule({
