@@ -7,12 +7,13 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-sidebar',
-  templateUrl: './sidebar.component.html'
+  templateUrl: './sidebar.component.html',
+  styleUrls: ['./sidebar.component.scss']
 })
 export class SidebarComponent implements OnInit {
   showMenu = '';
   showSubMenu = '';
-  public sidebarnavItems:RouteInfo[]=[];
+  public sidebarnavItems: RouteInfo[] = [];
   // this is for the open close
   addExpandClass(element: string) {
     if (element === this.showMenu) {
@@ -26,7 +27,7 @@ export class SidebarComponent implements OnInit {
     private modalService: NgbModal,
     private router: Router,
     private route: ActivatedRoute
-  ) {}
+  ) { }
 
   // End open close
   ngOnInit() {

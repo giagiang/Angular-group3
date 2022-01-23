@@ -4,7 +4,8 @@ import { NotifyService } from '../../../Services/Notify/Notify.service';
 import { UserService } from "../../../Services/User/User.service";
 import { HubService } from '../../../Services/Hub.service';
 import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import * as lodash from 'lodash';
 @Component({
   selector: 'app-user-table',
   templateUrl: './user-table.component.html',
@@ -21,6 +22,7 @@ export class UserTableComponent implements OnInit {
   closeResult = '';
 
   newUser: any = FormGroup;
+  updateUser: any = FormGroup;
   file: string = '';
   fileN = new FormControl();
   listRoles!: any;
@@ -31,16 +33,44 @@ export class UserTableComponent implements OnInit {
   open(content: any, id: any) {
     this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title' }).result.then((result) => {
       console.log(id);
-      this.userService.delete(id).subscribe(res=>{console.log(res)});
+      this.userService.delete(id).subscribe(res => { console.log(res) });
       this.closeResult = `Closed with: ${result}`;
     }, (reason) => {
       this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
     });
   }
+
   openEdit(content: any, data: any) {
+    this.getListRoles();
+    this.updateUser = this.formBuider.group({
+      FullName: [data.fullName, Validators.required],
+      Email: [data.email, [Validators.required, Validators.email]],
+      Image: [data.image, Validators.nullValidator],
+    });
+    this.checkedEdit = data.appRole;
     this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title' }).result.then((result) => {
-      console.log(data)
-      this.userService.update(data);
+
+      const checkBox = this.updateUser.get('Roles') as FormArray;
+      for (const item of this.returnValue) {
+        checkBox.push(this.formBuider.group(item));
+      }
+
+
+      const formData = new FormData();
+      const res = Object.assign({}, this.updateUser.value);
+      // tslint:disable-next-line:forin
+      for (const o in res) {
+        formData.append(o, res[o]);
+      }
+
+      this.userService.update(formData, data.id).subscribe((rsp) => {
+        if (rsp.isSuccessed) {
+          this.notify.showSuccess("Add Success");
+        }
+        else {
+          this.notify.showError(rsp.message)
+        }
+      }, err => this.notify.showError(err));
       this.closeResult = `Closed with: ${result}`;
     }, (reason) => {
       this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
@@ -52,11 +82,16 @@ export class UserTableComponent implements OnInit {
       this.listRoles = data;
     })
   }
-  onFileChange($event: any) {
+  onFileChange($event: any, action: string) {
     const file = $event.target.files[0]; // <--- File Object for future use.
     const acceptedImageTypes = ['image/gif', 'image/jpeg', 'image/png'];
     if (acceptedImageTypes.includes(file.type)) {
-      this.newUser.controls.Image.setValue(file ? file : ''); // <-- Set Value for Validation
+      if (action === 'add') {
+        this.newUser.controls.Image.setValue(file ? file : ''); // <-- Set Value for Validation
+      }
+      else {
+        this.updateUser.controls.Image.setValue(file ? file : '');
+      }
     }
     else {
       this.notify.showError("Plese add image");
@@ -68,10 +103,10 @@ export class UserTableComponent implements OnInit {
     this.newUser = this.formBuider.group({
       FullName: ['', Validators.required],
       UserName: ['', Validators.required],
-      Password: ['', [Validators.required,Validators.pattern('(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[$@$!%*?&])[A-Za-z\d$@$!%*?&].{8,}')]],
-      Email: ['', [Validators.required,Validators.email]],
+      Password: ['', [Validators.required, Validators.pattern('(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[$@$!%*?&])[A-Za-z\d$@$!%*?&].{8,}')]],
+      Email: ['', [Validators.required, Validators.email]],
       Image: ['', Validators.nullValidator],
-      Roles: ['', Validators.required],
+      Roles: []
     });
 
     this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title', size: 'lg' }).result.then((result) => {
@@ -82,10 +117,10 @@ export class UserTableComponent implements OnInit {
         formData.append(o, res[o]);
       }
       this.userService.createUser(formData).subscribe((rsp) => {
-        if(rsp.IsSuccessed){
+        if (rsp.isSuccessed) {
           this.notify.showSuccess("Add Success");
         }
-        else{
+        else {
           this.notify.showError(rsp.message)
         }
       }, err => this.notify.showError(err));
@@ -94,7 +129,7 @@ export class UserTableComponent implements OnInit {
       this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
     });
   }
-  
+
   private getDismissReason(reason: any): string {
     if (reason === ModalDismissReasons.ESC) {
       return 'by pressing ESC';
@@ -139,6 +174,60 @@ export class UserTableComponent implements OnInit {
   }
   removeUser(id: any) {
     this.userService.delete(id);
+  }
+
+  //Check exits
+  checkExits(array1: any) {
+    array1.users = null;
+    const result = lodash.findIndex(this.checkedEdit, array1);
+    return result;
+  }
+
+
+
+  // Role assign
+  checkedEdit: any = '';
+
+  openRoleAssign(content: any, data: any) {
+    this.getListRoles();
+    this.checkedEdit = data.appRole;
+    console.log(data)
+    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title' }).result.then((result) => {
+      const valueToSend: any = { roles: [] };
+      for (const dt of this.returnValue) {
+        valueToSend.roles.push(dt)
+      }
+      console.log(valueToSend);
+      this.userService.roleAssign(valueToSend, data.id).subscribe((rsp) => {
+        if (rsp.isSuccessed) {
+          this.notify.showSuccess("Add Success");
+        }
+        else {
+          this.notify.showError(rsp.message)
+        }
+      }, err => this.notify.showError(err));
+    });
+  }
+
+  returnValue: Array<any> = []
+
+
+  onToggle(event: any) {
+    if (this.returnValue.length === 0) {
+      this.returnValue.push({ name: event.target.value, selected: event.target.checked});
+    }
+    else {
+      // tslint:disable-next-line:prefer-for-of
+      for (let i = 0; i < this.returnValue.length; i++) {
+        if (this.returnValue[i].name === event.target.value) {
+          this.returnValue[i].selected = event.target.checked;
+          break;
+        }
+        else if (i === this.returnValue.length - 1) {
+          this.returnValue.push({ name: event.target.value, selected: event.target.checked });
+        }
+      }
+    }
   }
 
 }

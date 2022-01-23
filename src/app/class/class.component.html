@@ -1,0 +1,237 @@
+<div class="card">
+  <div class="card-body">
+    <h4 class="card-title">List Class in System</h4>
+    <h5 class="card-subtitle text-muted">Overview of the system</h5>
+    <button class="btn btn-primary" (click)="openNew(contentNew)">New Class</button>
+    <div class="table-responsive">
+      <table class="table align-middle text-nowrap">
+        <thead>
+          <tr>
+            <th>STT</th>
+            <th class="text-dark font-medium fs-4">Class Name</th>
+            <th class="text-dark font-medium fs-4">Description</th>
+            <th class="text-dark font-medium fs-4">UserCreated</th>
+            <th class="text-dark font-medium fs-4">ModifiedDate</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody *ngFor="let u of listClass|paginate : {
+            itemsPerPage: tableSize,
+            currentPage: page,
+            totalItems: count
+          };,index as i">
+          <tr>
+            <th scope="row">{{i+1}}</th>
+            <td>
+              <div class="d-flex align-items-center">
+                <img src={{BaseImage+u.image}} alt="user" width="45" class="rounded-circle">
+                <div class="ms-3">
+                  <h5 class="mb-0 font-medium">{{u.name}}</h5>
+                </div>
+              </div>
+            </td>
+            <td>{{u.description}}</td>
+            <td>{{u.userCreated}}</td>
+            <td>{{formatNumber(u.modifiedDate)}}</td>
+            <td>
+              <div ngbDropdown class="d-inline-block">
+                <button class="btn btn-outline-primary" id="dropdownBasic1" ngbDropdownToggle>Menu</button>
+                <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
+                  <button ngbDropdownItem (click)="openEdit(contentEdit,u)">Update</button>
+                  <button ngbDropdownItem (click)="open(content,u.id)">Delete</button>
+                  <button ngbDropdownItem (click)="openAddStudents(contentAddStudent,u.id)">Add Students TO
+                    Class</button>
+                </div>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="d-flex justify-content-center">
+        <pagination-controls previousLabel="Prev" nextLabel="Next" (pageChange)="onTableDataChange($event)">
+        </pagination-controls>
+      </div>
+    </div>
+  </div>
+  <ng-template #content let-modal>
+    <div class="modal-header modal-title bg-primary">
+      <h4 class="modal-title" id="modal-basic-title">Remove User</h4>
+      <button type="button" class="close btn-outline-success btn" aria-label="Close"
+        (click)="modal.dismiss('Cross click')">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <h5>Bạn có chắc là xóa lớp học này không ?</h5>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-outline-dark" (click)="modal.close('save')">Save</button>
+    </div>
+  </ng-template>
+
+  <!-- New Class -->
+  <ng-template #contentNew let-modal>
+    <div class="modal-header modal-title bg-primary">
+      <h4 class="modal-title" id="modal-basic-title">Create Class</h4>
+      <button type="button" class="close btn-outline-success btn" aria-label="Close"
+        (click)="modal.dismiss('Cross click')">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <form [formGroup]="newClass">
+        <div class="form-group">
+          <label for="exampleInputEmail1">Class Name</label>
+          <input class="form-control" placeholder="Class Name" formControlName="name">
+          <small id="emailHelp" class="form-text text-muted bg-danger" *ngIf="newClass.controls.name.invalid">We'll
+            never share your email with anyone else.</small>
+        </div>
+        <div class="form-group">
+          <label for="exampleInputEmail1">Class Description</label>
+          <input class="form-control" placeholder="Class Description" formControlName="description">
+          <small id="emailHelp" class="form-text text-muted bg-danger"
+            *ngIf="newClass.controls.description.invalid">Your Email</small>
+        </div>
+        <div class="form-group">
+          <label for="exampleInputEmail1">Image</label>
+          <input class="form-control" type="file" (change)="onFileChange($event,'add')">
+          <small id="emailHelp" class="form-text text-muted">Your Image</small>
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-outline-dark" (click)="modal.close('save')">Save</button>
+    </div>
+  </ng-template>
+
+
+
+
+
+  <!-- Modal edit -->
+  <ng-template #contentEdit let-modal>
+    <div class="modal-header modal-title bg-primary">
+      <h4 class="modal-title" id="modal-basic-title">Update User</h4>
+      <button type="button" class="close btn-outline-success btn" aria-label="Close"
+        (click)="modal.dismiss('Cross click')">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <form [formGroup]="updateClass">
+        <div class="form-group">
+          <label for="exampleInputEmail1">Class Name</label>
+          <input class="form-control" placeholder="Class Name" formControlName="name">
+          <small id="emailHelp" class="form-text text-muted bg-danger" *ngIf="updateClass.controls.name.invalid">We'll
+            never share your email with anyone else.</small>
+        </div>
+        <div class="form-group">
+          <label for="exampleInputEmail1">Class Description</label>
+          <input class="form-control" placeholder="Class Description" formControlName="description">
+          <small id="emailHelp" class="form-text text-muted bg-danger"
+            *ngIf="updateClass.controls.description.invalid">Your Email</small>
+        </div>
+        <div class="form-group">
+          <label for="exampleInputEmail1">Image</label>
+          <input class="form-control" type="file" (change)="onFileChange($event,'update')">
+          <small id="emailHelp" class="form-text text-muted">Your Image</small>
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button [disabled]="updateClass.invalid" type="button" class="btn btn-primary"
+        (click)="modal.close('save')">Save</button>
+    </div>
+  </ng-template>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <!-- Modal seach user to add -->
+  <ng-template #contentAddStudent let-modal>
+    <div class="modal-header modal-title bg-primary">
+      <h4 class="modal-title" id="modal-basic-title">Thêm học sinh vào lớp</h4>
+      <button type="button" class="close btn-outline-success btn" aria-label="Close"
+        (click)="modal.dismiss('Cross click')">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body container">
+      <div class="row">
+        <div class="col-6 height-student">
+          <div class="student_left-title">
+            List Student
+          </div>
+          <div class="list_student default-scroll">
+            <div *ngFor="let u of listUserToShow">
+              <div class="input-group mb-2 mt-2" (click)="transferData(u)">
+                <div class="list_student-name form-control list-group-item">{{u.fullName}}(huynab)</div>
+                <span class="input-group-text" style="background-color: aqua;">Transfer</span>
+              </div>
+            </div>
+            <div class="d-flex justify-content-center">
+              <div class="btn btn-sm btn-outline-primary">More</div>
+            </div>
+          </div>
+        </div>
+        <div class="col-6 height-student">
+          <div class="student_right-title student_right_top-40">
+            List Student To ADD
+          </div>
+          <div class="default-scroll" *ngIf="listUserToAdd.length !== 0">
+            <div *ngFor="let add of listUserToAdd">
+              <div class="input-group mb-2" (click)="onRemove(add)">
+                <div class="list_student-name form-control list-group-item" data-bs-toggle="tooltip"
+                  data-bs-placement="top" title="{{add.fullName}}/{{(add.email)}}">
+                  {{add.fullName}}({{transform(add.email)}})</div>
+                <span class="input-group-text" style="background-color: aqua;">Remove</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-6 height-student">
+          <div class="student_right-title student_right_top-40">
+            List Student Added
+          </div>
+          <div class="default-scroll"  *ngIf="listUserAdded.length !== 0">
+            <div *ngFor="let exist of listUserAdded">
+              <div class="input-group mb-2" (click)="onRemoveFromAdd(exist)">
+                <div class="list_student-name form-control list-group-item" data-bs-toggle="tooltip"
+                  data-bs-placement="top" title="{{exist.fullName}}/{{(exist.email)}}">
+                  {{exist.fullName}}({{transform(exist.email)}})</div>
+                <span class="input-group-text" style="background-color: aqua;">Remove</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-6 height-student">
+          <div class="student_right-title student_right_top-40">
+            List Student Remove
+          </div>
+          <div class="default-scroll" *ngIf="listUserRemoved.length !== 0">
+            <div *ngFor="let add of listUserRemoved">
+              <div class="input-group mb-2" (click)="onRemoveFromRemoved(add)">
+                <div class="list_student-name form-control list-group-item" data-bs-toggle="tooltip"
+                  data-bs-placement="top" title="{{add.fullName}}/{{(add.email)}}">
+                  {{add.fullName}}({{transform(add.email)}})</div>
+                <span class="input-group-text" style="background-color: aqua;">Remove</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-primary" (click)="modal.close('save')">Save</button>
+    </div>
+  </ng-template>

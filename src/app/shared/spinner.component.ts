@@ -3,7 +3,8 @@ import {
   Input,
   OnDestroy,
   Inject,
-  ViewEncapsulation
+  ViewEncapsulation,
+  OnInit
 } from '@angular/core';
 import {
   Router,
@@ -24,7 +25,7 @@ import { DOCUMENT } from '@angular/common';
     </div>`,
   encapsulation: ViewEncapsulation.None
 })
-export class SpinnerComponent implements OnDestroy {
+export class SpinnerComponent implements OnDestroy,OnInit {
   public isSpinnerVisible = true;
 
   @Input() public backgroundColor = 'rgba(0, 115, 170, 0.69)';
@@ -45,6 +46,9 @@ export class SpinnerComponent implements OnDestroy {
     );
   }
 
+  ngOnInit(): void {
+      
+  }
   ngOnDestroy(): void {
     this.isSpinnerVisible = false;
   }

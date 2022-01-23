@@ -12,7 +12,7 @@
             <th class="text-dark font-medium fs-4">UserName</th>
             <th class="text-dark font-medium fs-4">PhoneNumber</th>
             <th class="text-dark font-medium fs-4">Status</th>
-            <th class="text-dark font-medium fs-4">Roles</th>
+            <th class="text-dark font-medium fs-4 text-center">Roles</th>
             <th>Action</th>
           </tr>
         </thead>
@@ -37,10 +37,18 @@
             <td>
               <span class="p-2 bg-{{u.status===false?'danger':'primary'}} rounded-circle d-inline-block ms-3"></span>
             </td>
-            <td *ngFor="let i of u.roles">{{i.name?i.name:'no role'}}</td>
             <td>
-              <a class="btn-sm btn-danger" (click)="openEdit(contentEdit,u)">Update</a>
-              <a class="btn-sm btn-danger" (click)="open(content,u.id)">Delete</a>
+              <li *ngFor="let i of u.appRole"> {{i.name?i.name:'no role'}}</li>
+            </td>
+            <td>
+              <div ngbDropdown class="d-inline-block">
+                <button class="btn btn-outline-primary" id="dropdownBasic1" ngbDropdownToggle>Menu</button>
+                <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
+                  <button ngbDropdownItem  (click)="openEdit(contentEdit,u)">Update</button>
+                  <button ngbDropdownItem (click)="openRoleAssign(contentRoleAssign,u)">Role Assign</button>
+                  <button ngbDropdownItem (click)="open(content,u.id)">Delete</button>
+                </div>
+              </div>
             </td>
           </tr>
         </tbody>
@@ -66,27 +74,9 @@
       <button type="button" class="btn btn-outline-dark" (click)="modal.close('save')">Save</button>
     </div>
   </ng-template>
-  <ng-template #contentEdit let-modal>
-    <div class="modal-header modal-title bg-primary">
-      <h4 class="modal-title" id="modal-basic-title">Update User</h4>
-      <button type="button" class="close btn-outline-success btn" aria-label="Close"
-        (click)="modal.dismiss('Cross click')">
-        <span aria-hidden="true">&times;</span>
-      </button>
-    </div>
-    <div class="modal-body">
-      <form>
-
-      </form>
-    </div>
-    <div class="modal-footer">
-      <button type="button" class="btn btn-outline-dark" (click)="modal.close('save')">Save</button>
-    </div>
-  </ng-template>
-
   <ng-template #contentNew let-modal>
     <div class="modal-header modal-title bg-primary">
-      <h4 class="modal-title" id="modal-basic-title">New User</h4>
+      <h4 class="modal-title" id="modal-basic-title">Update User</h4>
       <button type="button" class="close btn-outline-success btn" aria-label="Close"
         (click)="modal.dismiss('Cross click')">
         <span aria-hidden="true">&times;</span>
@@ -97,37 +87,101 @@
         <div class="form-group">
           <label for="exampleInputEmail1">FullName</label>
           <input class="form-control" placeholder="FullName" formControlName="FullName">
-          <small id="emailHelp" class="form-text text-muted bg-danger" *ngIf="newUser.controls.FullName.invalid">Must Input Your FullName</small>
+          <small id="emailHelp" class="form-text text-muted bg-danger" *ngIf="newUser.controls.FullName.invalid">Must
+            Input Your FullName</small>
         </div>
         <div class="form-group">
           <label for="exampleInputEmail1">UserName</label>
           <input class="form-control" placeholder="UserName" formControlName="UserName">
-          <small id="emailHelp" class="form-text text-muted bg-danger" *ngIf="newUser.controls.UserName.invalid">We'll never share your email with anyone else.</small>
+          <small id="emailHelp" class="form-text text-muted bg-danger" *ngIf="newUser.controls.UserName.invalid">We'll
+            never share your email with anyone else.</small>
         </div>
         <div class="form-group">
           <label for="exampleInputEmail1">Password</label>
           <input class="form-control" type="password" placeholder="Password" formControlName="Password">
-          <small id="emailHelp" class="form-text text-muted bg-danger" *ngIf="newUser.controls.Password.invalid">Your Password</small>
+          <small id="emailHelp" class="form-text text-muted bg-danger" *ngIf="newUser.controls.Password.invalid">Your
+            Password</small>
         </div>
         <div class="form-group">
           <label for="exampleInputEmail1">Email</label>
           <input class="form-control" placeholder="Email" formControlName="Email">
-          <small id="emailHelp" class="form-text text-muted bg-danger" *ngIf="newUser.controls.Email.invalid">Your Email</small>
+          <small id="emailHelp" class="form-text text-muted bg-danger" *ngIf="newUser.controls.Email.invalid">Your
+            Email</small>
         </div>
         <div class="form-group">
           <label for="exampleInputEmail1">Image</label>
-          <input class="form-control" type="file" (change)="onFileChange($event)">
+          <input class="form-control" type="file" (change)="onFileChange($event,'add')">
           <small id="emailHelp" class="form-text text-muted">Your Image</small>
         </div>
         <div class="form-group">
           <label for="exampleInputEmail1">Roles</label>
-          <select class="form-control" formControlName="Roles" *ngFor="let r of listRoles">
-            <option [value]="r.name">{{r.name}}</option>
+          <select class="form-control" formControlName="Roles">
+            <option [value]="r.name" *ngFor="let r of listRoles">{{r.name}}</option>
           </select>
         </div>
       </form>
     </div>
     <div class="modal-footer">
-      <button [disabled]="newUser.invalid" type="button" class="btn btn-primary" (click)="modal.close('save')">Save</button>
+      <button type="button" class="btn btn-outline-dark" (click)="modal.close('save')">Save</button>
+    </div>
+  </ng-template>
+
+
+  <!-- Modal edit -->
+  <ng-template #contentEdit let-modal>
+    <div class="modal-header modal-title bg-primary">
+      <h4 class="modal-title" id="modal-basic-title">Update User</h4>
+      <button type="button" class="close btn-outline-success btn" aria-label="Close"
+        (click)="modal.dismiss('Cross click')">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <form [formGroup]="updateUser">
+        <div class="form-group">
+          <label for="exampleInputEmail1">FullName</label>
+          <input class="form-control" formControlName='FullName' placeholder="FullName">
+        </div>
+        <div class="form-group">
+          <label for="exampleInputEmail1">Email</label>
+          <input class="form-control" formControlName='Email' placeholder="Email">
+        </div>
+        <div class="form-group">
+          <label for="exampleInputEmail1">Image</label>
+          <input class="form-control" type="file" (change)="onFileChange($event,'update')">
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button [disabled]="updateUser.invalid" type="button" class="btn btn-primary"
+        (click)="modal.close('save')">Save</button>
+    </div>
+  </ng-template>
+
+  <!-- Modal Role Assign -->
+  <ng-template #contentRoleAssign let-modal>
+    <div class="modal-header modal-title bg-primary">
+      <h4 class="modal-title" id="modal-basic-title">Role Assign User</h4>
+      <button type="button" class="close btn-outline-success btn" aria-label="Close"
+        (click)="modal.dismiss('Cross click')">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <form>
+        <div class="form-group">
+          <label for="exampleInputEmail1">Roles</label>
+          <div class="form-check" *ngFor="let r of listRoles">
+            <input class="form-check-input" [value]="r.name" (change)="onToggle($event)" type="checkbox"
+              [checked]="checkExits(r)!==-1">
+            <label class="form-check-label" for="flexCheckDefault">
+              {{r.name}}
+            </label>
+          </div>
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-primary" (click)="modal.close('save')">Save</button>
     </div>
   </ng-template>

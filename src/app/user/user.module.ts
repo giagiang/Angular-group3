@@ -6,6 +6,8 @@ import { RouterModule, Routes } from '@angular/router';
 import { UserProfileComponent } from './user-components/user-profile/user-profile.component';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { UserInboxComponent } from './user-components/user-inbox/user-inbox.component';
 
 
 const userRoute: Routes = [
@@ -16,6 +18,10 @@ const userRoute: Routes = [
   {
     path: 'profile',
     component: UserProfileComponent
+  },
+  {
+    path: 'inbox',
+    component: UserInboxComponent
   }
 ];
 @NgModule({
@@ -24,7 +30,8 @@ const userRoute: Routes = [
     RouterModule.forChild(userRoute),
     NgxPaginationModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    NgbModule
     
   ],
   declarations: [UserComponent, UserTableComponent],

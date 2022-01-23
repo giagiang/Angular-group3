@@ -1,9 +1,9 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { AuthComponent } from './Auth/Auth.component';
 import { ExpenseGuard } from './expense.guard';
 
 import { FullComponent } from './layouts/full/full.component';
+import { NotFoundComponent } from './not-found/not-found.component';
 
 export const Approutes: Routes = [
   {
@@ -24,20 +24,15 @@ export const Approutes: Routes = [
         loadChildren: () => import('./Notification/Notification.module').then(m => m.NotificationModule)
       },
       {
-        path: 'about',
-        loadChildren: () => import('./about/about.module').then(m => m.AboutModule)
+        path: 'class',
+        loadChildren: () => import('./class/class.module').then(m => m.ClassModule)
       },
-      {
-        path: 'component',
-        loadChildren: () => import('./component/component.module').then(m => m.ComponentsModule)
-      },
-     
     ],
-    canActivate:[ExpenseGuard]
+    canActivate: [ExpenseGuard]
   },
   {
     path: '**',
-    redirectTo: 'login'
+    component:NotFoundComponent
   },
   {
     path: 'login',

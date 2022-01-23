@@ -4,9 +4,9 @@
 
 export const environment = {
   production: false,
-  BaseUrl: 'https://backend-api37.herokuapp.com/api/',
-  BaseImage: 'https://backend-api37.herokuapp.com/store-image/',
-  hubUrl:'https://backend-api37.herokuapp.com/hub'
+  BaseUrl: 'https://localhost:7170/api/',
+  BaseImage: 'https://localhost:7170/store-image/',
+  hubUrl:'https://localhost:7170/hub'
 };
 
 /*
