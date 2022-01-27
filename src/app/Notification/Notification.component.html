@@ -3,6 +3,7 @@
     <h4 class="card-title">List Notification in System</h4>
     <h5 class="card-subtitle text-muted">Overview of the system</h5>
     <button class="btn btn-primary" (click)="open(contentNew)">New Notify</button>
+    
     <div class="table-responsive">
       <table class="table align-middle text-nowrap">
         <thead>
@@ -23,11 +24,19 @@
             <td>{{u.title}}</td>
             <td ng-bind-html="u.message"><code [innerHtml]="u.message"></code></td>
             <td>
-              <a class="btn-sm btn-danger" (click)="openDelete(content,u.id)">Delete</a>
-              <a class="btn-sm btn-danger" (click)="openNotify(contentNotify,u.id)">Send Notify</a>
-              <a class="btn-sm btn-danger" (click)="openNotifyToUsers(contentNotifyToUsers,u.id)">Send Notify To
-                Users</a>
+              <div ngbDropdown class="d-inline-block">
+                <button class="btn btn-outline-primary" id="dropdownBasic1" ngbDropdownToggle>Menu</button>
+                <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
+                  <button ngbDropdownItem (click)="openDelete(content,u.id)">Delete</button>
+                  <!-- <button ngbDropdownItem (click)="openEdit(contentEdit,u.id)">Update</button> -->
+
+                  <button ngbDropdownItem (click)="openNotify(contentNotify,u.id)">Send Notify</button>
+                  <button ngbDropdownItem (click)="openNotifyToUsers(contentNotifyToUsers,u.id)">Send Notify To
+                    Users</button>
+                </div>
+              </div>
             </td>
+
           </tr>
         </tbody>
       </table>

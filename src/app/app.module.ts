@@ -27,6 +27,7 @@ import { PerfectScrollbarConfigInterface } from 'ngx-perfect-scrollbar';
 import { CustomHttpInterceptorService } from './CustomHttpInterceptorService';
 import { ToastrModule } from 'ngx-toastr';
 import { HubService } from './Services/Hub.service';
+import { SharedModule } from './shared/shared.module';
 
 const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
   suppressScrollX: true,
@@ -50,6 +51,7 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
     ReactiveFormsModule,
     HttpClientModule,
     NgbModule,
+    SharedModule,
     RouterModule.forRoot(Approutes, { useHash: false, preloadingStrategy: PreloadAllModules,}),
     PerfectScrollbarModule,
     ToastrModule.forRoot(),

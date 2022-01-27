@@ -5,6 +5,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { SharedModule } from 'app/shared/shared.module';
 
 const userRoute: Routes = [
   {
@@ -14,12 +15,9 @@ const userRoute: Routes = [
 ];
 @NgModule({
   imports: [
-    CommonModule,
-    FormsModule,
-    ReactiveFormsModule,
+    SharedModule,
     RouterModule.forChild(userRoute),
-    NgxPaginationModule,
-    NgbModule
+
   ],
   declarations: [ClassComponent]
 })

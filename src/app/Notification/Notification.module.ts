@@ -6,6 +6,8 @@ import { NgxPaginationModule } from 'ngx-pagination';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
+import { SharedModule } from 'app/shared/shared.module'; // absolute import 
+// import { SharedModule } from '../shared/shared.module'; // relative import 
 
 
 const notifyRoute: Routes = [
@@ -15,14 +17,9 @@ const notifyRoute: Routes = [
   }
 ];
 @NgModule({
-  imports: [
-    CommonModule,
+  imports: [    
     RouterModule.forChild(notifyRoute),
-    NgxPaginationModule,
-    FormsModule,
-    ReactiveFormsModule,
-    CKEditorModule,
-    InfiniteScrollModule
+    SharedModule
   ],
   declarations: [NotificationComponent]
 })

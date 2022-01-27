@@ -1,7 +1,7 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
-    "baseUrl": "./",
+    "baseUrl": "./src",
     "downlevelIteration": true,
     "module": "es2020",
     "outDir": "./dist/out-tsc",
@@ -12,6 +12,13 @@
     "experimentalDecorators": true,
     "target": "es2015",
     "strict": true,
+    "paths": {
+      "app/*": ["app/*"],
+      "config/*": ["app/_config/*"],
+      "environment/*": ["environments/*"],
+      "shared/*": ["app/_shared/*"],
+      "helpers/*": ["helpers/*"]
+    },
     "typeRoots": [
       "node_modules/@types"
     ],
